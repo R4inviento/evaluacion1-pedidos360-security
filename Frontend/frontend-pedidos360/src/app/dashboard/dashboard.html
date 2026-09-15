@@ -1,0 +1,297 @@
+<main class="dashboard">
+
+  <header class="topbar">
+
+    <div>
+      <h1>Pedidos360</h1>
+      <p>Plataforma de gestión de pedidos</p>
+    </div>
+
+    <button
+      class="logout"
+      (click)="logout()">
+      Cerrar sesión
+    </button>
+
+  </header>
+
+  <section class="user-card">
+
+    <div>
+      <span class="label">Usuario</span>
+      <strong>{{ userName }}</strong>
+    </div>
+
+    <div>
+      <span class="label">Correo</span>
+      <strong>{{ graphEmail() }}</strong>
+    </div>
+
+    <div>
+      <span class="label">Rol</span>
+      <strong class="role">
+        {{ userRole() }}
+      </strong>
+    </div>
+
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- PEDIDOS -->
+  <!-- ===================================================== -->
+
+  <section class="module">
+
+    <div class="module-header">
+      <div>
+        <h2>Pedidos</h2>
+        <p>
+          Gestión principal de pedidos mediante Orders.
+        </p>
+      </div>
+    </div>
+
+    <p class="status">
+      {{ ordersStatus() }}
+    </p>
+
+    <div class="actions">
+
+      <button
+        (click)="listarPedidos()">
+        Listar pedidos
+      </button>
+
+      <button
+        class="primary"
+        (click)="crearPedido()">
+        Crear pedido de prueba
+      </button>
+
+    </div>
+
+    <p class="status">
+      {{ createStatus() }}
+    </p>
+
+    @if (ordersJson()) {
+
+      <div class="result">
+
+        <h3>Pedidos registrados</h3>
+
+        <pre>{{ ordersJson() }}</pre>
+
+      </div>
+
+    }
+
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- CATÁLOGO -->
+  <!-- ===================================================== -->
+
+  <section class="module">
+
+    <div class="module-header">
+
+      <div>
+        <h2>Catálogo</h2>
+        <p>
+          Productos almacenados en Oracle mediante
+          ms-pedidos360-catalog.
+        </p>
+      </div>
+
+    </div>
+
+    <p class="status">
+      {{ catalogStatus() }}
+    </p>
+
+    <div class="actions">
+
+      <button
+        (click)="listarProductos()">
+        Listar productos
+      </button>
+
+      @if (puedeGestionarCatalogo()) {
+
+        <button
+          class="primary"
+          (click)="crearProductoPrueba()">
+          Crear producto
+        </button>
+
+        <button
+          (click)="actualizarPrimerProducto()">
+          Actualizar primero
+        </button>
+
+      }
+
+      @if (esAdmin()) {
+
+        <button
+          class="danger"
+          (click)="eliminarUltimoProducto()">
+          Eliminar último
+        </button>
+
+      }
+
+    </div>
+
+    <p class="status">
+      {{ productActionStatus() }}
+    </p>
+
+    @if (products().length > 0) {
+
+      <div class="products">
+
+        @for (
+          product of products();
+          track product.id
+        ) {
+
+          <article class="product-card">
+
+            <div class="product-title">
+
+              <h3>
+                {{ product.name }}
+              </h3>
+
+              <span class="product-id">
+                #{{ product.id }}
+              </span>
+
+            </div>
+
+            <p>
+              {{ product.description }}
+            </p>
+
+            <div class="product-info">
+
+              <span>
+                Precio:
+                <strong>
+                  ${{ product.price }}
+                </strong>
+              </span>
+
+              <span>
+                Stock:
+                <strong>
+                  {{ product.stock }}
+                </strong>
+              </span>
+
+              <span>
+                Estado:
+                <strong>
+                  {{ product.active ? 'Activo' : 'Inactivo' }}
+                </strong>
+              </span>
+
+            </div>
+
+          </article>
+
+        }
+
+      </div>
+
+    }
+
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- REPORTES -->
+  <!-- ===================================================== -->
+
+  @if (puedeVerReportes()) {
+
+    <section class="module">
+
+      <div class="module-header">
+
+        <div>
+          <h2>Reportes</h2>
+          <p>
+            Información procesada desde eventos de Kafka.
+          </p>
+        </div>
+
+      </div>
+
+      <p class="status">
+        {{ reportStatus() }}
+      </p>
+
+      <div class="actions">
+
+        <button
+          class="primary"
+          (click)="cargarReporte()">
+          Consultar resumen
+        </button>
+
+      </div>
+
+      @if (reportJson()) {
+
+        <div class="result">
+
+          <h3>Resumen</h3>
+
+          <pre>{{ reportJson() }}</pre>
+
+        </div>
+
+      }
+
+    </section>
+
+  }
+
+  <!-- ===================================================== -->
+  <!-- PRUEBA DE AUTORIZACIÓN -->
+  <!-- ===================================================== -->
+
+  <section class="module">
+
+    <div class="module-header">
+
+      <div>
+        <h2>Prueba de autorización</h2>
+
+        <p>
+          Comprueba el acceso real al endpoint protegido
+          de reportes utilizando el JWT del usuario autenticado.
+        </p>
+      </div>
+
+    </div>
+
+    <p class="status">
+      {{ securityStatus() }}
+    </p>
+
+    <div class="actions">
+
+      <button
+        class="primary"
+        (click)="probarAccesoRestringido()">
+        Probar acceso restringido
+      </button>
+
+    </div>
+
+  </section>
+
+</main>
