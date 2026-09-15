@@ -1,0 +1,13 @@
+# Node
+**/node_modules/
+**/.angular/
+**/dist/
+
+# Java / Maven
+**/target/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
